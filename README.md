@@ -29,17 +29,61 @@ This script automates slicing a 3D object in Blender along a specified orientati
 - **Active Object**: Ensure an object is selected and active in Blender.
 - **NumPy**: Required for mathematical computations.
 
-## Functions
-
-### `create_slices_from_orientation`
-Slices a Blender object into layers along a specified orientation.
-- **Parameters**: `obj` (Blender object), `num_slices` (int)
-- **Returns**: `sliced_objects` (list)
-- **Details**:
-  - Computes normal vector and bounding box.
-  - Determines slicing planes and aligns with slicing direction.
-  - Adds each slice to the `sliced_objects` list.
+## Code
 
 ```python
+import bpy
+import numpy as np
+from mathutils import Matrix, Vector
+
 def create_slices_from_orientation(obj, num_slices):
-    # [Function implementation]
+    # Slices a given Blender object into specified layers along its orientation
+    sliced_objects = []
+    # [Implementation for calculating normal vector, bounding box, slice planes, and slicing loop]
+    return sliced_objects
+
+def extract_vertices_and_normals(obj):
+    # Extracts world coordinates of vertices and normals from a Blender object
+    vertices_and_normals = []
+    # [Implementation for transforming vertices and normals to world space]
+    return vertices_and_normals
+
+def generate_gcode(vertices_and_normals):
+    # Generates G-code commands from vertex positions and normals
+    gcode = []
+    for vertex, normal in vertices_and_normals:
+        # Format as G1 command with X, Y, Z, and I, J, K for orientation
+        gcode.append(f"G1 X{vertex[0]:.4f} Y{vertex[1]:.4f} Z{vertex[2]:.4f} I{normal[0]:.4f} J{normal[1]:.4f} K{normal[2]:.4f}")
+    return gcode
+
+def five_axis_transform(g, offset=0.068):
+    # Transforms G-code commands for 5-axis kinematics, adding rotations
+    # [Implementation for normal vector, B and C angle calculations, transformations]
+    return result
+
+def printer(data, offset=0.068):
+    # Applies final translation and formats as a G-code command
+    # [Implementation for final translation and formatting]
+    return result
+
+def breaker(s):
+    # Parses G-code command string into components
+    parts = s.split()
+    result = (parts[0],) + tuple(float(p[1:]) for p in parts[1:])
+    return result
+
+def main():
+    # Main function for orchestrating slicing, data extraction, G-code generation, and file writing
+    bpy.ops.object.mode_set(mode='OBJECT')
+    obj = bpy.context.active_object
+    sliced_objects = create_slices_from_orientation(obj, num_slices=10)
+    gcode = []
+    for slice_obj in sliced_objects:
+        vertices_and_normals = extract_vertices_and_normals(slice_obj)
+        slice_gcode = generate_gcode(vertices_and_normals)
+        transformed_gcode = [five_axis_transform(breaker(cmd)) for cmd in slice_gcode]
+        gcode.extend(transformed_gcode)
+    with open("/path/to/output_gcode.txt", "w") as f:
+        for line in gcode:
+            f.write(line + "\n")
+    print("G-code saved to output_gcode.txt")
