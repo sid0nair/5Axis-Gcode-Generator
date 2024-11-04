@@ -68,7 +68,6 @@ def generate_gcode(vertices_and_normals):
     gcode = []
     for vertex, normal in vertices_and_normals:
         # Format as G1 command with X, Y, Z, and I, J, K for orientation
-        gcode.append(f"G1 X{vertex[0]:.4f} Y{vertex[1]:.4f} Z{vertex[2]:.4f} I{normal[0]:.4f} J{normal[1]:.4f} K{normal[2]:.4f}")
     return gcode
 
 def five_axis_transform(g, offset=0.068):
